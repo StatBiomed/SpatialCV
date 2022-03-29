@@ -2,6 +2,9 @@
 
 def sparkx(loc,count,X_mat = None):                           # loc: n × d matrix of spatial coordinates     count:n × p count matrix
     
+    n,p = count.shape
+    d = location.shape[1]
+    
     loc_colmean = location.mean(axis = 0)
     S = location - np.tile(loc_colmean,(n,1))              #centering location
     STSinv = np.linalg.inv(S.transpose().dot(S))
@@ -17,6 +20,7 @@ def sparkx(loc,count,X_mat = None):                           # loc: n × d 
         teststat = np.matrix(list(map(lambda x: YTHS[x,:].dot(STSinv).dot(YTHS[x,:].transpose())*YTYinv[0,x], range(p))))*n  
         #teststat is n^2 times the teststat in paper, following the mixture chi dist.
         
+        Ybar = count.mean(axis = 0)
         EE = list(map(lambda x: 1-n*YTYinv[0,x]*Ybar[0,x]**2,range(p)))         #eigenvalue of E, each element for each gene
         
     else:                                                # X_mat  n*q matrix
@@ -37,6 +41,6 @@ def sparkx(loc,count,X_mat = None):                           # loc: n × d 
         
         EE = list(map(lambda x: YTHY[0,x]*YTYinv[0,x],range(p)))
         
-    pval = list(map(lambda x:1-chi2comb_cdf(teststat[0,x],[ChiSquared(SigmaE[i] * EE[x], 0, 1) for i in range(2)],0)),range(p))     
+    pval = list(map(lambda x:1-chi2comb_cdf(teststat[0,x],[ChiSquared(SigmaE[i] * EE[x], 0, 1) for i in range(2)],0,atol = 1e-3)[0],range(p))) 
     
     return pval

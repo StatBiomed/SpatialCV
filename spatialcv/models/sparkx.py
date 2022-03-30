@@ -14,7 +14,7 @@ def sparkx(loc_mat,count_mat,X_mat = None):
     loc: numpy.matrix
         The matrix for spatial location information  x axis: location  y axis: coordinate
     count: numpy.matrix
-        The count matrix of genes    x axis: location  y axis: genes
+        The count matrix of genes    x axis: genes  y axis:location 
     Xamt: numpy.matrix
         A covariate matrix 
     

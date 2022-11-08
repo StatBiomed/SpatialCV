@@ -33,11 +33,13 @@ location <- spot_info[, 1:2]
 ## Run SPATRKX
 sparkx_res <- sparkx(rawcount, location, numCores=1, option="mixture")
 
+## Save SPARKX results
 save(sparkx_res, file="./Layer2_BC_Count_sparkx.rds")
 
 
-## Save data
-Matrix::writeMM(rawcount, './Layer2_BC_Count.mtx')
+## Save head data
 write.table(spot_info, "./Layer2_BC_Count_spots.tsv", quote = FALSE, sep='\t')
-write.table(sparkx_res$res_mtest, "./Layer2_BC_Count_sparkx.tsv", quote = FALSE)
 
+Matrix::writeMM(rawcount[1:100, ], './Layer2_BC_Count_head.mtx')
+write.table(sparkx_res$res_mtest[1:100,], "./Layer2_BC_Count_sparkx_mtest_head.tsv", quote = FALSE)
+write.table(sparkx_res$res_stest[1:100,], "./Layer2_BC_Count_sparkx_stest_head.tsv", quote = FALSE)

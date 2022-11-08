@@ -93,7 +93,7 @@ def sparkp(loc,count,X_mat = None):                           # loc: n × d 
     S = loc - np.tile(loc_colmean,(n,1))              #centering location
     STSinv = np.linalg.inv(S.transpose().dot(S))
     
-    YTYinv = 1/(count.power(2)).sum(axis = 0)             # 1*p matrix stores the (yty)-1 for each gene
+    YTYinv = 1/(np.power(count, 2)).sum(axis = 0)             # 1*p matrix stores the (yty)-1 for each gene
     
     if(X_mat == None):
         
@@ -101,7 +101,7 @@ def sparkp(loc,count,X_mat = None):                           # loc: n × d 
         
         YTHS = count.transpose().dot(S)                    # each row is ytHS matrix (1*d)
         
-        teststat = np.matrix(list(map(lambda x: YTHS[x,:].dot(STSinv).dot(YTHS[x,:].transpose())*YTYinv[0,x], range(p))))*n  
+        teststat = np.matrix(list(map(lambda x: (YTHS[x,:].dot(STSinv).dot(YTHS[x,:].transpose())*YTYinv[0,x])[0,0], range(p))))*n  
         #teststat is n^2 times the teststat in paper, following the mixture chi dist.
         
         Ybar = count.mean(axis = 0)
@@ -117,7 +117,7 @@ def sparkp(loc,count,X_mat = None):                           # loc: n × d 
         SigmaE = np.linalg.eig(STSinv.dot(HS.transpose()).dot(HS))[0]
         
         HY = H.dot(Y)
-        YTHY = HY.power(2).sum(axis = 1)
+        YTHY = np.power(HY, 2).sum(axis = 1)
         
         YTHS = Y.transpose().dot(HS)
         
